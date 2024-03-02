@@ -1,16 +1,19 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
-const auth = require("../controllers/auth");
-const { verifyAccessToken } = require("../helpers/jwt");
-const loginLimiter = require("../middlewares/rate-limiter");
+import auth from '../controllers/auth/index.js';
+
+import { verifyAccessToken } from '../helpers/jwt.js';
+import loginLimiter from "../middlewares/rate-limiter.js";
 
 /**
  * @swagger
  * '/api/auth/register':
+ *  
  *  post:
  *     summary: To register a new user
  *     description: This api is used to register a new user
+ *     tags: [Auth]
  *     requestBody:
  *      required: true
  *      content:
@@ -37,6 +40,21 @@ router.post("/register", auth.Register);
  *  post:
  *      summary: To login a user
  *      description: This api is used to login a user
+ *      tags: [Auth]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *             schema:
+ *              type: object
+ *              required:
+ *                - email
+ *                - password
+ *              properties:
+ *                email:    
+ *                  type: string
+ *                password:
+ *                  type: string
  *      responses:
  *          200:
  *              description: To login a user
@@ -49,6 +67,7 @@ router.post("/login", loginLimiter, auth.Login);
  * /api/auth/refresh_token:
  *  post:
  *      summary: To refresh access token
+ *      tags: [Auth]
  *      description: This api is used to refresh access token
  *      responses:
  *          200:
@@ -62,6 +81,7 @@ router.post("/refresh", auth.RefreshToken);
  * /api/auth/logout:
  *  post:
  *      summary: To logout a user
+ *      tags: [Auth]
  *      description: This api is used to logout a user
  *      responses:
  *          200:
@@ -75,6 +95,7 @@ router.post("/logout", auth.Logout);
  * /api/auth/me:
  *  get:
  *      summary: To get user details
+ *      tags: [Auth]
  *      description: This api is used to get user details
  *      responses:
  *          200:
@@ -83,4 +104,4 @@ router.post("/logout", auth.Logout);
  */
 router.get("/me", verifyAccessToken, auth.Me);
 
-module.exports = router;
+export default router;

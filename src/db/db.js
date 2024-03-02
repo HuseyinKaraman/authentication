@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
-exports.connectMongoose = async (uri,collectionName, timeout) => {
+import mongoose from 'mongoose';
+
+export const connectMongoose = async (uri,collectionName, timeout) => {
     try {
         await mongoose.connect(`mongodb://${uri}`, {
             // connectTimeoutMS: timeout,

@@ -1,5 +1,12 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 
-exports.installServerConfigs = () => {
+const installServerConfigs = () => {
     dotenv.config();
+};
+
+
+const serverConfig = {
+    installServerConfigs
 }
+
+export default serverConfig;

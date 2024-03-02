@@ -1,7 +1,7 @@
-const RateLimit = require("express-rate-limit");
-const RedisStore = require("rate-limit-redis");
-const redis = require("../clients/redis");
-const Boom = require("boom");
+import RateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
+import redis  from "../clients/redis.js";
+import Boom from 'boom';
 
 const limiter = new RateLimit({
     windowMs: 60 * 1000, // 1 minute
@@ -18,4 +18,4 @@ const limiter = new RateLimit({
     },
 });
 
-module.exports = limiter;
+export default limiter;

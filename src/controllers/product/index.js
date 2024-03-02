@@ -1,6 +1,32 @@
-const Product = require("../../models/product");
-const Boom = require("boom");
-const ProductSchema = require("./validations");
+import ProductModel from "../../models/product.js";
+import Boom from "boom";
+import ProductSchema from "./validations.js";
+import { multipleImageUpload } from "../../helpers/s3.js";
+
+const CreateWithS3 = async (req, res, next) => {
+    const input = req.body;
+    const images = req.files;
+    const { error } = ProductSchema.validate(input);
+
+    if (error) {
+        return next(Boom.badRequest(error.details[0].message));
+    }
+
+    try {
+        const locations = await multipleImageUpload(images);
+
+        const product = new ProductModel({
+            title: input.title,
+            description: input.description,
+            price: input.price,
+            images: [...locations],
+        });
+        const savedData = await product.save();
+        res.json(savedData);
+    } catch (e) {
+        next(e);
+    }
+};
 
 const Create = async (req, res, next) => {
     const input = req.body;
@@ -11,11 +37,13 @@ const Create = async (req, res, next) => {
     }
 
     try {
-        // todo : image upload
-        
-        const product = new Product(input);
+        const product = new ProductModel({
+            title: input.title,
+            description: input.description,
+            price: input.price,
+            images: [...req.files.map((file) => file.filename)],
+        });
         const savedData = await product.save();
-
         res.json(savedData);
     } catch (e) {
         next(e);
@@ -30,7 +58,7 @@ const Get = async (req, res, next) => {
     }
 
     try {
-        const product = await Product.findById(product_id);
+        const product = await ProductModel.findById(product_id);
 
         res.json(product);
     } catch (e) {
@@ -42,7 +70,7 @@ const Update = async (req, res, next) => {
     const { product_id } = req.params;
 
     try {
-        const updated = await Product.findByIdAndUpdate(product_id, req.body, {
+        const updated = await ProductModel.findByIdAndUpdate(product_id, req.body, {
             new: true,
         });
 
@@ -56,7 +84,7 @@ const Delete = async (req, res, next) => {
     const { product_id } = req.params;
 
     try {
-        const deleted = await Product.findByIdAndDelete(product_id);
+        const deleted = await ProductModel.findByIdAndDelete(product_id);
 
         if (!deleted) {
             throw Boom.badRequest("Product not found.");
@@ -79,7 +107,7 @@ const GetList = async (req, res, next) => {
     const skip = (parseInt(page) - 1) * limit;
 
     try {
-        const products = await Product.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const products = await ProductModel.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
         res.json(products);
     } catch (e) {
@@ -87,10 +115,6 @@ const GetList = async (req, res, next) => {
     }
 };
 
-module.exports = {
-    Create,
-    Get,
-    Update,
-    Delete,
-    GetList,
-};
+const Product = { Create, CreateWithS3, Get, Update, Delete, GetList };
+
+export default Product;

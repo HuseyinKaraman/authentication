@@ -1,8 +1,8 @@
-const Joi = require("joi");
+import Joi from 'joi';
 
 const OrderSchema = Joi.object({
   address: Joi.string().required(),
   items: Joi.required(),
 });
 
-module.exports=  OrderSchema;
+export default OrderSchema;

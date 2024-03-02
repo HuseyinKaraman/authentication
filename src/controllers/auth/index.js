@@ -1,12 +1,12 @@
-const Boom = require("boom");
-const User = require("../../models/user");
+import Boom from "boom";
+import User from "../../models/user.js";
 
 // helpers
-const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("../../helpers/jwt");
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../../helpers/jwt.js";
 
 // validations
-const ValidationSchema = require("./validations");
-const redis = require("../../clients/redis");
+import ValidationSchema from "./validations.js";
+import redis from "../../clients/redis.js";
 
 const Register = async (req, res, next) => {
     const input = req.body;
@@ -132,10 +132,12 @@ const Me = async (req, res, next) => {
     }
 };
 
-module.exports = {
+const Auth = {
     Register,
     Login,
     RefreshToken,
     Logout,
-    Me,
-};
+    Me
+} 
+
+export default Auth;

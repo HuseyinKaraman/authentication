@@ -1,7 +1,6 @@
-const jwt = require("jsonwebtoken");
-const Boom = require("boom");
-
-const redis = require("../clients/redis");
+import JWT from "jsonwebtoken";
+import Boom from "boom";
+import redis from "../clients/redis.js";
 
 const signAccessToken = (data) => {
 	return new Promise((resolve, reject) => {
@@ -14,7 +13,7 @@ const signAccessToken = (data) => {
 			issuer: "ecommerce.app",
 		};
 
-		jwt.sign(payload, process.env.JWT_SECRET, options, (err, token) => {
+		JWT.sign(payload, process.env.JWT_SECRET, options, (err, token) => {
 			if (err) {
 				console.log(err);
 				reject(Boom.internal());
@@ -26,12 +25,14 @@ const signAccessToken = (data) => {
 };
 
 const verifyAccessToken = (req, res, next) => {
-	const authorizationToken = req.headers["authorization"];
+	// const authorizationToken = req.headers["authorization"];
+	const authorizationToken = req.headers["authorization"].includes("Bearer") ? req.headers["authorization"].slice(7) : req.headers["authorization"];
+
 	if (!authorizationToken) {
 		next(Boom.unauthorized());
 	}
 
-	jwt.verify(authorizationToken, process.env.JWT_SECRET, (err, payload) => {
+	JWT.verify(authorizationToken, process.env.JWT_SECRET, (err, payload) => {
 		if (err) {
 			return next(
 				Boom.unauthorized(
@@ -55,7 +56,7 @@ const signRefreshToken = (user_id) => {
 			issuer: "ecommerce.app",
 		};
 
-		jwt.sign(payload, process.env.JWT_REFRESH_SECRET, options, (err, token) => {
+		JWT.sign(payload, process.env.JWT_REFRESH_SECRET, options, (err, token) => {
 			if (err) {
 				console.log(err);
 				reject(Boom.internal());
@@ -71,7 +72,7 @@ const signRefreshToken = (user_id) => {
 
 const verifyRefreshToken = async (refresh_token) => {
 	return new Promise(async (resolve, reject) => {
-		jwt.verify(
+		JWT.verify(
 			refresh_token,
 			process.env.JWT_REFRESH_SECRET,
 			async (err, payload) => {
@@ -95,7 +96,7 @@ const verifyRefreshToken = async (refresh_token) => {
 	});
 };
 
-module.exports = {
+export {
 	signAccessToken,
 	verifyAccessToken,
 	signRefreshToken,

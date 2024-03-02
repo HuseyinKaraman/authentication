@@ -1,4 +1,4 @@
-const swaggerJsdoc = require("swagger-jsdoc");
+import  swaggerJsdoc from "swagger-jsdoc"
 
 const options = {
     definition: {
@@ -12,12 +12,22 @@ const options = {
                 url: "http://localhost:5000",
             },
         ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT",
+                }
+            }
+        },
+        security: {
+            bearerAuth: [],
+        }
     },
     apis: ["./src/routes/*.js"],
 };
 
 const swaggerDocs = swaggerJsdoc(options);
 
-module.exports = {
-    swaggerDocs,
-};
+export default swaggerDocs;

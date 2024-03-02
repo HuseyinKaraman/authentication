@@ -1,14 +1,14 @@
-const express = require('express');
+import { Router } from 'express';
 
 // helpers
-const { verifyAccessToken } = require('../helpers/jwt');
+import { verifyAccessToken } from '../helpers/jwt.js';
 
 // routes
-const auth = require('./auth');
-const product = require('./product');
-const order = require('./order');
+import auth from './auth.js';
+import product from './product.js';
+import order from './order.js';
 
-const router = express.Router();
+const router = Router();
 
 /** 
  * @swagger
@@ -48,4 +48,4 @@ router.use('/product', product);
  * */
 router.use('/order', verifyAccessToken, order);
 
-module.exports = router;
+export default router;

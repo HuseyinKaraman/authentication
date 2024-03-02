@@ -1,9 +1,9 @@
-const expressRedisCache = require('express-redis-cache');
-const redis = require('./clients/redis');
+import expressRedisCache from 'express-redis-cache';
+import redis from './clients/redis';
 
 const cache = expressRedisCache({
   client: redis,
   expire: 60,
 });
 
-module.exports = cache;
+export default cache;

@@ -1,10 +1,13 @@
-const serverConfig = require('./serverConfig')
-const mongoDbConfig = require('./mongoDbConfig')
-const swaggerConfig = require("./swaggerConfig");
+import serverConfig from "./serverConfig.js";
+import mongoDbConfig from "./mongoDbConfig.js";
+import swaggerConfig from "./swaggerConfig.js";
+import s3Config from "./s3Config.js";
 
+const Config = {
+    serverConfig,
+    mongoDbConfig,
+    swaggerConfig,
+    s3Config,
+};
 
-module.exports = {
-    serverConfig: serverConfig,
-    mongoDbConfig: mongoDbConfig,
-    swaggerConfig: swaggerConfig,
-}
+export default Config;
